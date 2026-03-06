@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">  <!-- 以上代码告诉IE浏览器，IE8/9及以后的版本都会以最高版本IE来渲染页面。 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="../static/layui/css/normalize.css">
+    <link rel="stylesheet" href="../static/layui/css/common.css">
+    <link rel="stylesheet" href="../static/layui/css/select.css">
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+</head>
+<body style="height:100%;">
+
+
+<br>
+<p>病险工程信息</p>
+<table class="layui-hide" id="wjtp" lay-filter="test"></table>
+<br>
+
+<form class="layui-form" id="test" style="display:none" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">工程名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" required  lay-verify="required" placeholder="请输入工程名称" autocomplete="on" class="layui-input" id="bxName" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上报人</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" required  lay-verify="required" placeholder="请输入申报人" autocomplete="on" class="layui-input" id="userName" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">日期</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="time" placeholder="yyyy-MM-dd">
+            </div>
+        </div>
+    </div>
+
+
+
+
+</form>
+
+
+<div style="text-align:center">
+    <button type="button" class="layui-btn" onclick="operation1()">提醒养护</button>
+    <button type="button" class="layui-btn" onclick="operation2()">工程报废</button>
+    <button type="button" class="layui-btn" onclick="backurl()">返回</button>
+</div>
+
+<script type="text/javascript" src="../static/script/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../static/script/common.js"></script>
+<script type="text/javascript" src="../static/layui/layui.js" charset="utf-8"></script>
+
+
+
+<script>
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+
+  //常规用法
+  laydate.render({
+    elem: '#time'
+  });
+});
+</script>
+
+
+<script>
+
+    layui.use('table', function(){
+    var url=window.location.search;
+    if(url.indexOf("?")!=-1){
+    var str = url.substr(1);
+     strs = str.split("&");
+     var key=new Array(strs.length);
+     var value=new Array(strs.length);
+     for(i=0;i<strs.length;i++){
+      key[i]=strs[i].split("=")[0]
+     value[i]=unescape(strs[i].split("=")[1]);
+        //alert(key[i]+"="+value[i]);
+    }
+}
+      var table = layui.table;
+      table.render({
+        elem: '#wjtp'
+        ,method:'post'
+        ,url:''
+        ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+        ,parseData: function (res){
+                return{
+                    "code": 0,
+                    "msg": "",
+                    "count": 1000,
+                    "data": res.data
+                };
+            }
+         ,where: {
+                lng:value[0],
+                lat:value[1]
+            }
+        ,cols: [[
+		       // {type: 'checkbox', fixed: 'left'}
+		       {field:'bxgc_code', title:'病险工程id'}
+			   ,{field:'bxgc_name', title:'病险工程名称'}
+		       ,{field:'desc', title:'描述'}
+		       ,{field:'bxgc_type', title:'病险工程类型'}
+		       ,{field:'time', title:'时间'}
+			   //,{field:'wjtp_anno', title:'照片说明'}
+              //bxgc_code,bxgc_name,desc,bxgc_type,time
+		     ]]
+      });
+    });
+</script>
+
+
+<script type="text/javascript">
+    function operation1(){
+     var url=window.location.search;
+     if(url.indexOf("?")!=-1){
+        var str = url.substr(1);
+        strs = str.split("&");
+        var key=new Array(strs.length);
+        var value=new Array(strs.length);
+        for(i=0;i<strs.length;i++){
+            key[i]=strs[i].split("=")[0]
+            value[i]=unescape(strs[i].split("=")[1]);
+            //alert(key[i]+"="+value[i]);
+        }
+    }
+    //页面层
+
+    layer.open({
+        type:1,
+        area:['500px','600px'],
+        title: '提醒养护'
+        ,content: $("#test"),
+        shade: 0,
+        btn: ['提交', '重置']
+
+
+        ,btn1: function(index, layero){
+            var form = layui.form;
+
+            var bxName=$("#bxName").val();
+            var userName=$("#userName").val();
+            var time=$("#time").val();
+
+
+            var aaa={
+                "bxName":bxName,
+                "userName":userName,
+                "time":time,
+                "dealway":"提醒养护"
+            }
+            console.log(aaa)
+            $.ajax({
+                 url:"http://localhost:8081/bxInfo/addBingxian",
+
+                 type:"post",
+
+                 dataType: "json",
+
+                  data:JSON.stringify(aaa),
+                  contentType:"application/json",
+                  success: function(data) {
+                    alert("提醒养护成功！")
+                           console.log("ajax成功啦");
+                           console.log(data);
+                     parent.layer.close(index);//关闭当前页
+                    }, //成功执行方法
+                   error: function(e) {
+                           console.log("执行失败")
+                            console.log(e);
+                    } //错误执行方法
+             })
+
+        },
+        btn2: function(index, layero){
+            // 重置清空
+                  $('#test')[0].reset();
+                  form.render();//必须写
+        },
+        cancel: function(layero,index){
+            layer.closeAll();
+        }
+
+    });
+
+
+}
+
+</script>
+<script type="text/javascript">
+function operation2(){
+   var url=window.location.search;
+     if(url.indexOf("?")!=-1){
+        var str = url.substr(1);
+        strs = str.split("&");
+        var key=new Array(strs.length);
+        var value=new Array(strs.length);
+        for(i=0;i<strs.length;i++){
+            key[i]=strs[i].split("=")[0]
+            value[i]=unescape(strs[i].split("=")[1]);
+            //alert(key[i]+"="+value[i]);
+        }
+    }
+    //页面层
+
+    layer.open({
+        type:1,
+        area:['500px','600px'],
+        title: '工程报废'
+        ,content: $("#test"),
+        shade: 0,
+        btn: ['提交', '重置']
+
+
+        ,btn1: function(index, layero){
+            var form = layui.form;
+
+            var bxName=$("#bxName").val();
+            var userName=$("#userName").val();
+            var time=$("#time").val();
+
+
+            var aaa={
+                "bxName":bxName,
+                "userName":userName,
+                "time":time,
+                "dealway":"工程报废"
+            }
+            console.log(aaa)
+            $.ajax({
+                 url:"http://localhost:8081/bxInfo/addBingxian",
+
+                 type:"post",
+
+                 dataType: "json",
+
+                  data:JSON.stringify(aaa),
+                  contentType:"application/json",
+                  success: function(data) {
+                  alert("工程报废成功！")
+                           console.log("ajax成功啦");
+                           console.log(data);
+                    parent.layer.close(index);//关闭当前页
+
+                    }, //成功执行方法
+                   error: function(e) {
+                           console.log("执行失败")
+                            console.log(e);
+                    } //错误执行方法
+             })
+
+        },
+        btn2: function(index, layero){
+          // 重置清空
+                  $('#test')[0].reset();
+                  form.render();//必须写
+        },
+        cancel: function(layero,index){
+            layer.closeAll();
+        }
+
+    });
+
+}
+
+</script>
+<script type="text/javascript">
+    function backurl(){
+        window.history.go(-1);
+    }
+
+</script>
+
+</body>
+</html>

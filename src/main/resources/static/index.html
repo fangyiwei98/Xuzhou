@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<link rel="stylesheet" src="js/aes.js">
+    <link rel="stylesheet" src="js/jquery-2.2.3.min.js">
+    <link rel="stylesheet" src="js/pad-zeropadding.js">
+    <link rel="stylesheet" src="js/security.js">-->
+    <script type="text/javascript" src="js/aes.js"></script>
+    <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="js/pad-zeropadding.js"></script>
+    <script type="text/javascript" src="js/security.js"></script>
+</head>
+<body>
+<button id="select" onclick="sendData()">发送</button>
+</body>
+<script>
+
+    function sendData(){
+        alert("发送的数据："+Encrypt(JSON.stringify({name:"123",pwd:"123456789"})));
+        $.ajax({
+            type:"POST",
+            url:'http://localhost:8666/User/login',
+            data:Encrypt(JSON.stringify({name:"123",pwd:"123456789"})),
+            dataType:'json',
+            contentType:"application/json",
+            success:function (resdata){
+                alert("返回的数据："+resdata);
+                alert("解密之后："+Decrypt(resdata));
+                alert("解密之后转json对象："+JSON.parse(Decrypt(resdata)).name);
+            }
+        })
+    }
+    // aes秘钥
+    // var privateKey="abcdef0123456789";
+    // aes加密
+    // var data = Encrypt(JSON.stringify({name:"qiangqiang"}),privateKey);
+    // 创建json对象
+    // var json = {
+    // "requestData": data
+    // };
+    // $.ajax({
+    // type: "POST",
+    // url:"/testAesEncrypt",
+    // data:JSON.stringify(json),
+    // dataType:'json',
+    // contentType: "application/json",
+    // success: function(result) {
+    // var data = Decrypt(result.requestData,privateKey);
+    // alert("返回的数据："+data);
+    // }
+    // });
+
+</script>
+</html>

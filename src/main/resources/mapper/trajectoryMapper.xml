@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Dao.trajectoryMapper">
+  <resultMap id="BaseResultMap" type="com.example.POJO.trajectory">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="taskcode" jdbcType="VARCHAR" property="taskcode" />
+    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
+    <result column="checkmile" jdbcType="VARCHAR" property="checkmile" />
+  </resultMap>
+  
+  <resultMap id="selectPathMap" type="map">
+    <result column="tx" jdbcType="LONGVARBINARY" property="tx" />
+    <result column="ty" jdbcType="LONGVARBINARY" property="ty" />
+    <result column="tsa" jdbcType="VARCHAR" property="tsa" />
+    <result column="stime" jdbcType="VARCHAR" property="stime" />
+	<result column="etime" jdbcType="VARCHAR" property="etime" />
+	<result column="taskcode" jdbcType="VARCHAR" property="taskcode" />
+  </resultMap>
+  
+  <select id="selectPath" resultMap="selectPathMap">
+  		select tra.pathx as tx, tra.pathy as ty, tra.taskcode as taskcode, task.statue as tsa, task.time as stime, task.endtime as etime
+		from TASKINFO task
+		LEFT JOIN TRAJECTORY tra ON task.id=tra.taskcode
+		where stime > #{today, jdbcType=VARCHAR}
+  </select>
+  
+  <resultMap id="selectPathByNameMap" type="map">
+    <result column="pathx" jdbcType="LONGVARBINARY" property="pathx" />
+    <result column="pathy" jdbcType="LONGVARBINARY" property="pathy" />
+    <result column="stime" jdbcType="VARCHAR" property="stime" />
+	<result column="etime" jdbcType="VARCHAR" property="etime" />
+  </resultMap>
+  
+
+
+    <select id="selectPathByTaskcode" resultMap="selectPathByNameMap">
+		select tra.pathx, tra.pathy, task.time as stime, task.endtime as etime
+		from TRAJECTORY tra
+		LEFT JOIN TASKINFO task ON task.id=tra.taskcode
+		where taskcode = #{taskcode, jdbcType=VARCHAR}
+  </select>
+  
+
+
+
+
+
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} -&#45;&#45; [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+        <Property name="LOG_FILE_PATH">logs</Property>
+    </Properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+        <RollingFile name="RollingFile" fileName="${LOG_FILE_PATH}/spring-boot-log4j2-demo.log" filePattern="${LOG_FILE_PATH}/spring-boot-log4j2-demo-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Filters>
+                <!-- 只记录ERROR级别日志信息，程序打印的其他信息不会被记录 -->
+                <!-- 此level设置的日志级别，是过滤日志文件中打印出的日志信息，和Root的level有所区别 -->
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+                <!-- 每天创建一个日志文件 -->
+                <TimeBasedTriggeringPolicy interval="1" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </appenders>
+
+    <loggers>
+        <root level="INFO">
+            <appender-ref ref="RollingFile" />
+            <appender-ref ref="Console" />
+        </root>
+    </loggers>
+</configuration>

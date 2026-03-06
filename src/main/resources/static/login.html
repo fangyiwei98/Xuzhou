@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>系统登录</title>
+</head>
+
+<body>
+<div th:text="${msg}" style="color: red"></div>
+<form action="http://localhost:8666/UserLogin/doLogin" method="post">
+  帐号：<input type="text" id="txtUsername" name="name" /><br/>
+  密码：<input type="password" id="txtPassword" name="pwd" /><br/><br/>
+<!--  人员类型：<input type="text" id="txtRole" name="role" /><br/><br/>-->
+  <input type="submit" value="提交" /> <input type="reset" value="重置" />
+</form>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<form action="http://localhost:8080/File/save" method="post" name="form" id="formId">
+    <table>
+        <tr>
+            <td>名称：</td>
+            <td><input type="text" id="title" name="entity.title" class="input"></td>
+        </tr>
+        <tr>
+            <td>图片：</td>
+            <td>
+                <input type="file" id="uploadImage" name="uploadImage"
+                       accept="image/gif,image/png,image/jpeg,image/bmp"/>
+
+                <input type="hidden" id="imgUrl" name="entity.imgUrl"
+                       value="<s:property value='entity.imgUrl'/>">
+
+                <span>提示：文件大小不超过200k，建议图片宽高为300px*300px</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="button" onclick="doSubmit()" value="提交"/>
+                <input type="reset" value="取消">
+            </td>
+        </tr>
+    </table>
+</form>
+<script type="text/javascript">
+    function doSubmit(){
+        var formData=new FormData($("#formId")[0]);
+        $.ajax({
+            url:'http://localhost:8080/File/save',
+            type: 'post',
+            cache: false, //上传文件不需要缓存
+            async : true,
+            data: formdata,
+            processData: false, // 此处是关键：告诉jQuery不要去处理发送的数据
+            contentType: false, // 此处是关键：告诉jQuery不要去设置Content-Type请求头
+            success: function (data) {
+                //处理成功后动作，比如调转window.location.href ='/list'
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    }
+</script>
+</body>
+</html>
